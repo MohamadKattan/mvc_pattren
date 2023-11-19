@@ -1,27 +1,27 @@
 import 'dart:convert' as convert;
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mvc_pattren/client_srv/api_status.dart';
+import 'package:mvc_pattren/utils/constants.dart';
 
-class HttpsService {
-  
+class HttpSrv {
   // get mehtod
   Future getData({required String url}) async {
-    final getUrl = Uri.https(url);
-
-    final response = await http
-        .get(getUrl)
-        .timeout(const Duration(milliseconds: 5000), onTimeout: () {
-      if (kDebugMode) print('Time Out');
-      throw const Text('Time Out');
-    });
-    if (response.statusCode == 200) {
-      final data = convert.jsonDecode(response.body) as Map<String, dynamic>;
-      if (kDebugMode) print('Response ok: ${response.statusCode}');
-      return data;
-    } else {
-      if (kDebugMode) print('Request failed status: ${response.statusCode}.');
-      return 'failed';
+    try {
+      final getUrl = Uri.https(url);
+      final response = await http
+          .get(getUrl)
+          .timeout(const Duration(milliseconds: countTimeOutHttp), onTimeout: () {
+        throw Failur(errorResponse: timeOutMsg, code: 100);
+      });
+      if (response.statusCode == 200) {
+        final data = convert.jsonDecode(response.body) as Map<String, dynamic>;
+        return Success(code: response.statusCode, response: data);
+      } else {
+        return Failur(
+            errorResponse: errorResponseMsg, code: response.statusCode);
+      }
+    } catch (e) {
+      return Failur(errorResponse: e.toString(), code: 500);
     }
   }
 
@@ -30,17 +30,22 @@ class HttpsService {
       {required String url,
       Map<String, String>? header,
       required Map<String, dynamic> body}) async {
-    Map<String, String> defultHeader = {'contentType': 'application/json'};
-    final postUrl = Uri.https(url);
-    var response =
-        await http.post(postUrl, headers: header ?? defultHeader, body: body);
-    if (response.statusCode == 200) {
-      final data = convert.jsonDecode(response.body) as Map<String, dynamic>;
-      if (kDebugMode) print('Response ok: ${response.statusCode}');
-      return data;
-    } else {
-      if (kDebugMode) print('Response body: ${response.body}');
-      return 'failed';
+    try {
+      final postUrl = Uri.https(url);
+      var response = await http
+          .post(postUrl, headers: header ?? defultHeader, body: body)
+          .timeout(const Duration(microseconds: countTimeOutHttp), onTimeout: () {
+        throw Failur(errorResponse: timeOutMsg, code: 100);
+      });
+      if (response.statusCode == 200) {
+        final data = convert.jsonDecode(response.body) as Map<String, dynamic>;
+        return Success(code: response.statusCode, response: data);
+      } else {
+        return Failur(
+            errorResponse: errorResponseMsg, code: response.statusCode);
+      }
+    } catch (e) {
+      return Failur(errorResponse: e.toString(), code: 500);
     }
   }
 }
