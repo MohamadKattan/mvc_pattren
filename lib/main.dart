@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mvc_pattren/env/env.dart';
 import 'package:mvc_pattren/views/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
-  print(Env.key1);
-  print(Env.key2);
 }
 
 class MyApp extends StatelessWidget {

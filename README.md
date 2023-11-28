@@ -56,11 +56,23 @@
       Note about Obfuscation
        No matter which option you choose, it's a good idea to obfuscate your entire code when you build a release version of your app, and the official documentation explains how to do this:
 
-       Obfuscating Dart code
-      
+       Obfuscating Dart code     
 # }
+
+
+# 2- handel your permmison {
+  permission_handler
+# } 
  
  
+# 3_ scuer local Storage {
+  flutter_secure_storage
+# }
+
+# 4_ {
+   Background snapshot protection => secure_application
+# }
+
 
 
 ## Getting Started
